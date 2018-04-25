@@ -56,8 +56,6 @@ module Capistrano
       #
       # @return void
       def clone
-        backend.execute(:mkdir, '-p', tmp_path)
-
         git(:clone, fetch(:repo_url), repo_cache_path)
       end
 
@@ -89,6 +87,8 @@ module Capistrano
       #
       # @return void
       def prepare_release
+        backend.execute(:mkdir, '-p', tmp_path)
+
         if fetch(:upload_path) != '.'
           backend.execute(:tar, '-czf', archive_path, '-C', fetch(:upload_path), '.')
         elsif fetch(:with_submodules)
