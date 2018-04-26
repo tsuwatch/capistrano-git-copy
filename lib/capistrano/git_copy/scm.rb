@@ -8,6 +8,7 @@ module Capistrano
     class SCM < ::Capistrano::SCM::Plugin
       # set default values
       def set_defaults
+        set_if_empty :with_tar, false
         set_if_empty :with_clean, true
         set_if_empty :with_submodules, true
         set_if_empty :git_excludes,    []
@@ -89,7 +90,7 @@ module Capistrano
       def prepare_release
         backend.execute(:mkdir, '-p', tmp_path)
 
-        if fetch(:upload_path) != '.'
+        if fetch(:upload_path) != '.' || fetch(:with_tar)
           backend.execute(:tar, '-czf', archive_path, '-C', fetch(:upload_path), '.')
         elsif fetch(:with_submodules)
           backend.execute(git_archive_all_bin, "--prefix=''", archive_path)
